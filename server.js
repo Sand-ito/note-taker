@@ -10,8 +10,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "./public")));
 
+app.get('/notes', (res, req) => res.sendFile(path.join(__dirname, './public/notes.html')));
+app.get('*', (res, req) => res.sendFile(path.join(__dirname, './public/index.html')));
+
 app.get('/api/notes', (req,res) => {
     const notes = fs.readFileSync('./db/db.json', 'utf-8');
+    res.json(notes);
+});
+
+
+app.post('/api/notes', (req,res) => {
+    const notes = fs.readFileSync('./db/db.json', 'utf-8');
+    const newnote = req.body;
+    let id = notes.length;
+    newnote.id = id;
+    notes.push(newnote);
     res.json(notes);
 });
 
